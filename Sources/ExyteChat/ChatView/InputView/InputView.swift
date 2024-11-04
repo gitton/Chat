@@ -124,7 +124,7 @@ struct InputView: View {
                 HStack(alignment: .bottom, spacing: 0) {
                     leftView
                     middleView
-                    rightView
+                    // rightView
                 }
                 .background {
                     RoundedRectangle(cornerRadius: 18)
