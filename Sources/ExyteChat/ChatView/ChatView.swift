@@ -142,6 +142,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
 
     @Binding  var loading: Bool
 
+
     public init(messages: [Message],
                 loading : Binding<Bool>,
                 chatType: ChatType = .conversation,
@@ -185,7 +186,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
             }
 
             .fullScreenCover(isPresented: $inputViewModel.showPicker) {
-                AttachmentsEditor(inputViewModel: inputViewModel, inputViewBuilder: inputViewBuilder, chatTitle: chatTitle, messageUseMarkdown: messageUseMarkdown, orientationHandler: orientationHandler, mediaPickerSelectionParameters: mediaPickerSelectionParameters, availableInput: availablelInput)
+                AttachmentsEditor(inputViewModel: inputViewModel, inputViewBuilder: inputViewBuilder, chatTitle: chatTitle, messageUseMarkdown: messageUseMarkdown, orientationHandler: orientationHandler, mediaPickerSelectionParameters: mediaPickerSelectionParameters, availableInput: availablelInput, loading: $loading)
                     .environmentObject(globalFocusState)
             }
 
@@ -346,6 +347,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
                 }
             }
         }
+        
     }
 
     var inputView: some View {
@@ -360,8 +362,8 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
                     inputFieldId: viewModel.inputFieldId,
                     style: .message,
                     availableInput: availablelInput,
-                    messageUseMarkdown: messageUseMarkdown,
-                    recorderSettings: recorderSettings
+                    messageUseMarkdown: messageUseMarkdown, loading: $loading
+//                    recorderSettings: recorderSettings
                 )
             }
         }

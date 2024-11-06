@@ -30,6 +30,8 @@ struct AttachmentsEditor<InputViewContent: View>: View {
 
     @State private var seleсtedMedias: [Media] = []
     @State private var currentFullscreenMedia: Media?
+   @Binding var loading: Bool
+
 
     var showingAlbums: Bool {
         inputViewModel.mediaPickerMode == .albums
@@ -121,7 +123,8 @@ struct AttachmentsEditor<InputViewContent: View>: View {
                     inputFieldId: UUID(),
                     style: .signature,
                     availableInput: availableInput,
-                    messageUseMarkdown: messageUseMarkdown
+                    messageUseMarkdown: messageUseMarkdown,
+                    loading: $loading
                 )
             }
         }

@@ -27,5 +27,7 @@ Pod::Spec.new do |s|
   s.dependency 'FloatingButton'
   s.dependency 'ActivityIndicatorView'
   s.dependency 'ExytePopupView'
+    # Added LottieView dependency
+  s.dependency 'lottie-ios'
 
 end

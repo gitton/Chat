@@ -96,7 +96,7 @@ public struct Message: Identifiable, Hashable {
                 }
             }
 
-            return Message(id: id, user: user, status: status, createdAt: draft.createdAt, text: draft.text, attachments: attachments, recording: draft.recording, replyMessage: draft.replyMessage)
+            return Message(id: id, user: user, status: status, createdAt: draft.createdAt, text: draft.text, attachments: attachments, replyMessage: draft.replyMessage)
         }
 }
 

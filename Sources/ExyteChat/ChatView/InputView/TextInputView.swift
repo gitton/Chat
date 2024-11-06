@@ -14,6 +14,7 @@ struct TextInputView: View {
     var inputFieldId: UUID
     var style: InputViewStyle
     var availableInput: AvailableInputType
+    let horizontalPadding: CGFloat = 16
 
     var body: some View {
         TextField("", text: $text, axis: .vertical)
@@ -24,7 +25,9 @@ struct TextInputView: View {
             }
             .foregroundColor(style == .message ? theme.colors.textLightContext : theme.colors.textDarkContext)
             .padding(.vertical, 10)
-            .padding(.leading, !availableInput.isMediaAvailable ? 12 : 0)
+            .padding(.leading, horizontalPadding)
+            .padding(.trailing, horizontalPadding)
+            // .padding(.leading, !availableInput.isMediaAvailable ? 12 : 0)
             .onTapGesture {
                 globalFocusState.focus = .uuid(inputFieldId)
             }

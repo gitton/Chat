@@ -17,19 +17,11 @@ final class InputViewModel: ObservableObject {
 
     @Published var showActivityIndicator = false
 
-    var recordingPlayer: RecordingPlayer?
     var didSendMessage: ((DraftMessage) -> Void)?
-
-    private var recorder = Recorder()
 
     private var saveEditingClosure: ((String) -> Void)?
 
-    private var recordPlayerSubscription: AnyCancellable?
     private var subscriptions = Set<AnyCancellable>()
-    
-    func setRecorderSettings(recorderSettings: RecorderSettings = RecorderSettings()) {
-        self.recorder.recorderSettings = recorderSettings
-    }
 
     func onStart() {
         subscribeValidation()
@@ -41,19 +33,25 @@ final class InputViewModel: ObservableObject {
     }
 
     func reset() {
+        // Clear text first
+        self.text = ""
+        
         DispatchQueue.main.async { [weak self] in
-            self?.showPicker = false
-            self?.text = ""
-            self?.saveEditingClosure = nil
-            self?.attachments = InputViewAttachments()
-            self?.subscribeValidation()
-            self?.state = .empty
+            guard let self = self else { return }
+            
+            // Reset other properties
+            self.showPicker = false
+            self.saveEditingClosure = nil
+            self.attachments = InputViewAttachments()
+            self.subscribeValidation()
+            self.state = .empty
+            
+            // Force UI update for text field
+            self.objectWillChange.send()
         }
     }
 
     func send() {
-        recorder.stopRecording()
-        recordingPlayer?.reset()
         sendMessage()
             .store(in: &subscriptions)
     }
@@ -81,57 +79,11 @@ final class InputViewModel: ObservableObject {
             showPicker = true
         case .send:
             send()
-        case .recordAudioTap:
-            state = recorder.isAllowedToRecordAudio ? .isRecordingTap : .waitingForRecordingPermission
-            recordAudio()
-        case .recordAudioHold:
-            state = recorder.isAllowedToRecordAudio ? .isRecordingHold : .waitingForRecordingPermission
-            recordAudio()
-        case .recordAudioLock:
-            state = .isRecordingTap
-        case .stopRecordAudio:
-            recorder.stopRecording()
-            if let _ = attachments.recording {
-                state = .hasRecording
-            }
-            recordingPlayer?.reset()
-        case .deleteRecord:
-            unsubscribeRecordPlayer()
-            recorder.stopRecording()
-            attachments.recording = nil
-        case .playRecord:
-            state = .playingRecording
-            if let recording = attachments.recording {
-                subscribeRecordPlayer()
-                recordingPlayer?.play(recording)
-            }
-        case .pauseRecord:
-            state = .pausedRecording
-            recordingPlayer?.pause()
         case .saveEdit:
             saveEditingClosure?(text)
             reset()
         case .cancelEdit:
             reset()
-        }
-    }
-
-    private func recordAudio() {
-        if recorder.isRecording {
-            return
-        }
-        Task { @MainActor in
-            attachments.recording = Recording()
-            let url = await recorder.startRecording { duration, samples in
-                DispatchQueue.main.async { [weak self] in
-                    self?.attachments.recording?.duration = duration
-                    self?.attachments.recording?.waveformSamples = samples
-                }
-            }
-            if state == .waitingForRecordingPermission {
-                state = .isRecordingTap
-            }
-            attachments.recording?.url = url
         }
     }
 }
@@ -145,8 +97,7 @@ private extension InputViewModel {
             if !self.text.isEmpty || !self.attachments.medias.isEmpty {
                 self.state = .hasTextOrMedia
             } else if self.text.isEmpty,
-                      self.attachments.medias.isEmpty,
-                      self.attachments.recording == nil {
+                      self.attachments.medias.isEmpty {
                 self.state = .empty
             }
         }
@@ -174,16 +125,16 @@ private extension InputViewModel {
             .store(in: &subscriptions)
     }
 
-    func subscribeRecordPlayer() {
-        recordPlayerSubscription = recordingPlayer?.didPlayTillEnd
-            .sink { [weak self] in
-                self?.state = .hasRecording
-            }
-    }
+    // func subscribeRecordPlayer() {
+    //     // recordPlayerSubscription = recordingPlayer?.didPlayTillEnd
+    //     //     .sink { [weak self] in
+    //     //         self?.state = .hasRecording
+    //     //     }
+    // }
 
-    func unsubscribeRecordPlayer() {
-        recordPlayerSubscription = nil
-    }
+    // func unsubscribeRecordPlayer() {
+    //     // recordPlayerSubscription = nil
+    // }
 }
 
 private extension InputViewModel {
@@ -220,7 +171,7 @@ private extension InputViewModel {
                 DraftMessage(
                     text: self.text,
                     medias: attachments.medias,
-                    recording: attachments.recording,
+//                    recording: attachments.recording,
                     replyMessage: attachments.replyMessage,
                     createdAt: Date()
                 )

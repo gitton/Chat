@@ -23,13 +23,13 @@ public extension View {
         self.environment(\.chatTheme, theme)
     }
 
-    func chatTheme(colors: ChatTheme.Colors = .init(),
-                   images: ChatTheme.Images = .init()) -> some View {
-        self.environment(\.chatTheme, ChatTheme(colors: colors, images: images))
+    func chatTheme(colors: ChatTheme.Colors = .init()) -> some View {
+        self.environment(\.chatTheme, ChatTheme(colors: colors, images: .init()))
     }
 }
 
 public struct ChatTheme {
+
     public let colors: ChatTheme.Colors
     public let images: ChatTheme.Images
 
@@ -42,71 +42,89 @@ public struct ChatTheme {
     public struct Colors {
         public var grayStatus: Color
         public var errorStatus: Color
-
         public var inputLightContextBackground: Color
         public var inputDarkContextBackground: Color
-
         public var mainBackground: Color
         public var buttonBackground: Color
         public var addButtonBackground: Color
         public var sendButtonBackground: Color
         public var messageMenuBackground: Color
-
         public var myMessage: Color
         public var friendMessage: Color
-
         public var textLightContext: Color
         public var textDarkContext: Color
         public var textMediaPicker: Color
-
         public var recordDot: Color
-
         public var myMessageTime: Color
         public var frientMessageTime: Color
-
         public var timeCapsuleBackground: Color
         public var timeCapsuleForeground: Color
 
         public init(
-            grayStatus: Color = Color(hex: "AFB3B8"),
-            errorStatus: Color = Color.red,
-            inputLightContextBackground: Color = Color(hex: "F2F3F5"),
-            inputDarkContextBackground: Color = Color(hex: "F2F3F5").opacity(0.12),
-            mainBackground: Color = .white,
-            buttonBackground: Color = Color(hex: "989EAC"),
-            addButtonBackground: Color = Color(hex: "#4F5055"),
-            sendButtonBackground: Color = Color(hex: "#4962FF"),
-            messageMenuBackground: Color = Color.white,
-            myMessage: Color = Color(hex: "4962FF"),
-            friendMessage: Color = Color(hex: "EBEDF0"),
-            textLightContext: Color = Color.black,
-            textDarkContext: Color = Color.white,
-            textMediaPicker: Color = Color(hex: "818C99"),
-            recordDot: Color = Color(hex: "F62121"),
-            myMessageTime: Color = .white.opacity(0.4),
-            frientMessageTime: Color = .black.opacity(0.4),
-            timeCapsuleBackground: Color = .black.opacity(0.4),
-            timeCapsuleForeground: Color = .white
+            grayStatus: Color? = nil,
+            errorStatus: Color? = nil,
+            inputLightContextBackground: Color? = nil,
+            inputDarkContextBackground: Color? = nil,
+            mainBackground: Color? = nil,
+            buttonBackground: Color? = nil,
+            addButtonBackground: Color? = nil,
+            sendButtonBackground: Color? = nil,
+            messageMenuBackground: Color? = nil,
+            myMessage: Color? = nil,
+            friendMessage: Color? = nil,
+            textLightContext: Color? = nil,
+            textDarkContext: Color? = nil,
+            textMediaPicker: Color? = nil,
+            recordDot: Color? = nil,
+            myMessageTime: Color? = nil,
+            frientMessageTime: Color? = nil,
+            timeCapsuleBackground: Color? = nil,
+            timeCapsuleForeground: Color? = nil,
+            isDarkMode: Bool = false
         ) {
-            self.grayStatus = grayStatus
-            self.errorStatus = errorStatus
-            self.inputLightContextBackground = inputLightContextBackground
-            self.inputDarkContextBackground = inputDarkContextBackground
-            self.mainBackground = mainBackground
-            self.buttonBackground = buttonBackground
-            self.addButtonBackground = addButtonBackground
-            self.sendButtonBackground = sendButtonBackground
-            self.messageMenuBackground = messageMenuBackground
-            self.myMessage = myMessage
-            self.friendMessage = friendMessage
-            self.textLightContext = textLightContext
-            self.textDarkContext = textDarkContext
-            self.textMediaPicker = textMediaPicker
-            self.recordDot = recordDot
-            self.myMessageTime = myMessageTime
-            self.frientMessageTime = frientMessageTime
-            self.timeCapsuleBackground = timeCapsuleBackground
-            self.timeCapsuleForeground = timeCapsuleForeground
+            if isDarkMode {
+                // Dark mode colors
+                self.grayStatus = grayStatus ?? Color(hex: "6D7075")
+                self.errorStatus = errorStatus ?? Color.red
+                self.inputLightContextBackground = inputLightContextBackground ?? Color(hex: "262626")
+                self.inputDarkContextBackground = inputDarkContextBackground ?? Color(hex: "262626").opacity(0.12)
+                self.mainBackground = mainBackground ?? Color.black
+                self.buttonBackground = buttonBackground ?? Color(hex: "646A76")
+                self.addButtonBackground = addButtonBackground ?? Color(hex: "4CAF50")
+                self.sendButtonBackground = sendButtonBackground ?? Color(hex: "4CAF50")
+                self.messageMenuBackground = messageMenuBackground ?? Color.black
+                self.myMessage = myMessage ?? Color(hex: "4CAF50")
+                self.friendMessage = friendMessage ?? Color(hex: "26282B")
+                self.textLightContext = textLightContext ?? Color.white
+                self.textDarkContext = textDarkContext ?? Color.white
+                self.textMediaPicker = textMediaPicker ?? Color(hex: "A0A9B0")
+                self.recordDot = recordDot ?? Color(hex: "F62121")
+                self.myMessageTime = myMessageTime ?? Color.white.opacity(0.8)
+                self.frientMessageTime = frientMessageTime ?? Color.white.opacity(0.4)
+                self.timeCapsuleBackground = timeCapsuleBackground ?? Color.black.opacity(0.4)
+                self.timeCapsuleForeground = timeCapsuleForeground ?? Color.white
+            } else {
+                // Light mode colors
+                self.grayStatus = grayStatus ?? Color(hex: "AFB3B8")
+                self.errorStatus = errorStatus ?? Color.red
+                self.inputLightContextBackground = inputLightContextBackground ?? Color(hex: "F2F3F5")
+                self.inputDarkContextBackground = inputDarkContextBackground ?? Color(hex: "F2F3F5").opacity(0.12)
+                self.mainBackground = mainBackground ?? Color.white
+                self.buttonBackground = buttonBackground ?? Color(hex: "989EAC")
+                self.addButtonBackground = addButtonBackground ?? Color(hex: "4CAF50")
+                self.sendButtonBackground = sendButtonBackground ?? Color(hex: "4CAF50")
+                self.messageMenuBackground = messageMenuBackground ?? Color.white
+                self.myMessage = myMessage ?? Color(hex: "4CAF50")
+                self.friendMessage = friendMessage ?? Color(hex: "EBEDF0")
+                self.textLightContext = textLightContext ?? Color.black
+                self.textDarkContext = textDarkContext ?? Color.white
+                self.textMediaPicker = textMediaPicker ?? Color(hex: "818C99")
+                self.recordDot = recordDot ?? Color(hex: "F62121")
+                self.myMessageTime = myMessageTime ?? Color.white.opacity(0.8)
+                self.frientMessageTime = frientMessageTime ?? Color.black.opacity(0.4)
+                self.timeCapsuleBackground = timeCapsuleBackground ?? Color.black.opacity(0.4)
+                self.timeCapsuleForeground = timeCapsuleForeground ?? Color.white
+            }
         }
     }
 

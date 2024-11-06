@@ -27,13 +27,14 @@ struct MessageView: View {
     @State var timeSize: CGSize = .zero
 
     static let widthWithMedia: CGFloat = 204
-    static let horizontalNoAvatarPadding: CGFloat = 8
+    static let horizontalNoAvatarPadding: CGFloat = 12
     static let horizontalAvatarPadding: CGFloat = 8
     static let horizontalTextPadding: CGFloat = 12
     static let horizontalAttachmentPadding: CGFloat = 1 // for multiple attachments
     static let statusViewSize: CGFloat = 14
     static let horizontalStatusPadding: CGFloat = 8
     static let horizontalBubblePadding: CGFloat = 70
+    let messageViewPadding: CGFloat = 4
 
     var font: UIFont
 
@@ -49,7 +50,8 @@ struct MessageView: View {
         let timeWidth = timeSize.width + 10
         let textPaddings = MessageView.horizontalTextPadding * 2
         let widthWithoutMedia = UIScreen.main.bounds.width
-        - (message.user.isCurrentUser ? MessageView.horizontalNoAvatarPadding : avatarViewSize.width)
+        - ( MessageView.horizontalNoAvatarPadding)
+        // - (message.user.isCurrentUser ? MessageView.horizontalNoAvatarPadding : avatarViewSize.width)
         - statusSize.width
         - MessageView.horizontalBubblePadding
         - textPaddings
@@ -86,9 +88,10 @@ struct MessageView: View {
 
     var body: some View {
         HStack(alignment: .bottom, spacing: 0) {
-            if !message.user.isCurrentUser {
-                avatarView
-            }
+            //commented out to hide the avatar for all messages
+            // if !message.user.isCurrentUser {
+            //     avatarView
+            // }
 
             VStack(alignment: message.user.isCurrentUser ? .trailing : .leading, spacing: 2) {
                 if !isDisplayingMessageMenu, let reply = message.replyMessage?.toMessage() {
@@ -115,7 +118,8 @@ struct MessageView: View {
         }
         .padding(.top, topPadding)
         .padding(.bottom, bottomPadding)
-        .padding(.trailing, message.user.isCurrentUser ? MessageView.horizontalNoAvatarPadding : 0)
+        //.padding(.trailing, message.user.isCurrentUser ? MessageView.horizontalNoAvatarPadding : 0)
+        .padding(message.user.isCurrentUser ? .trailing : .leading, MessageView.horizontalNoAvatarPadding)
         .padding(message.user.isCurrentUser ? .leading : .trailing, MessageView.horizontalBubblePadding)
         .frame(maxWidth: UIScreen.main.bounds.width, alignment: message.user.isCurrentUser ? .trailing : .leading)
     }
@@ -141,6 +145,7 @@ struct MessageView: View {
                 }
             }
         }
+        .padding(.all, messageViewPadding)
         .bubbleBackground(message, theme: theme)
     }
 
@@ -169,6 +174,7 @@ struct MessageView: View {
         .font(.caption2)
         .padding(.vertical, 8)
         .frame(width: message.attachments.isEmpty ? nil : MessageView.widthWithMedia + additionalMediaInset)
+        .padding(.all, messageViewPadding)
         .bubbleBackground(message, theme: theme, isReply: true)
     }
 
