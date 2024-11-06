@@ -18,6 +18,7 @@ final class InputViewModel: ObservableObject {
     @Published var showActivityIndicator = false
 
     var didSendMessage: ((DraftMessage) -> Void)?
+    var didClickSuggestions: (() -> Void)?
 
     private var saveEditingClosure: ((String) -> Void)?
 
@@ -85,6 +86,10 @@ final class InputViewModel: ObservableObject {
         case .cancelEdit:
             reset()
         }
+    }
+    
+    func clickedSuggestions() {
+        self.didClickSuggestions?()
     }
 }
 

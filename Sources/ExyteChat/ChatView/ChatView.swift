@@ -79,6 +79,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
     let sections: [MessagesSection]
     let ids: [String]
     let didSendMessage: (DraftMessage) -> Void
+    let didClickSuggestions: (() -> Void)
 
     // MARK: - View builders
 
@@ -148,12 +149,14 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
                 chatType: ChatType = .conversation,
                 replyMode: ReplyMode = .quote,
                 didSendMessage: @escaping (DraftMessage) -> Void,
+                didClickSuggestions: @escaping () -> Void,
                 messageBuilder: @escaping MessageBuilderClosure,
                 inputViewBuilder: @escaping InputViewBuilderClosure,
                 messageMenuAction: MessageMenuActionClosure?) {
         self.type = chatType
         self._loading = loading
         self.didSendMessage = didSendMessage
+        self.didClickSuggestions = didClickSuggestions
         self.sections = ChatView.mapMessages(messages, chatType: chatType, replyMode: replyMode)
         self.ids = messages.map { $0.id }
         self.messageBuilder = messageBuilder
@@ -345,6 +348,10 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
                         NotificationCenter.default.post(name: .onScrollToBottom, object: nil)
                     }
                 }
+            }
+
+            inputViewModel.didClickSuggestions = {
+                didClickSuggestions()
             }
         }
         
@@ -601,10 +608,12 @@ public extension ChatView where MessageContent == EmptyView {
         chatType: ChatType = .conversation,
         replyMode: ReplyMode = .quote,
         didSendMessage: @escaping (DraftMessage) -> Void,
+        didClickSuggestions: @escaping () -> Void,
         inputViewBuilder: @escaping InputViewBuilderClosure,
         messageMenuAction: MessageMenuActionClosure?) {
        self.type = chatType
        self.didSendMessage = didSendMessage
+       self.didClickSuggestions = didClickSuggestions
        self.sections = ChatView.mapMessages(messages, chatType: chatType, replyMode: replyMode)
        self.ids = messages.map { $0.id }
        self.inputViewBuilder = inputViewBuilder
@@ -620,10 +629,12 @@ public extension ChatView where InputViewContent == EmptyView {
         chatType: ChatType = .conversation,
         replyMode: ReplyMode = .quote,
         didSendMessage: @escaping (DraftMessage) -> Void,
+        didClickSuggestions: @escaping () -> Void,
         messageBuilder: @escaping MessageBuilderClosure,
         messageMenuAction: MessageMenuActionClosure?) {
        self.type = chatType
        self.didSendMessage = didSendMessage
+       self.didClickSuggestions = didClickSuggestions
        self.sections = ChatView.mapMessages(messages, chatType: chatType, replyMode: replyMode)
        self.ids = messages.map { $0.id }
        self.messageBuilder = messageBuilder
@@ -639,10 +650,12 @@ public extension ChatView where MenuAction == DefaultMessageMenuAction {
         chatType: ChatType = .conversation,
         replyMode: ReplyMode = .quote,
         didSendMessage: @escaping (DraftMessage) -> Void,
+        didClickSuggestions: @escaping () -> Void,
         messageBuilder: @escaping MessageBuilderClosure,
         inputViewBuilder: @escaping InputViewBuilderClosure) {
        self.type = chatType
        self.didSendMessage = didSendMessage
+       self.didClickSuggestions = didClickSuggestions
        self.sections = ChatView.mapMessages(messages, chatType: chatType, replyMode: replyMode)
        self.ids = messages.map { $0.id }
        self.messageBuilder = messageBuilder
@@ -658,9 +671,11 @@ public extension ChatView where MessageContent == EmptyView, InputViewContent ==
         chatType: ChatType = .conversation,
         replyMode: ReplyMode = .quote,
         didSendMessage: @escaping (DraftMessage) -> Void,
+        didClickSuggestions: @escaping () -> Void,
         messageMenuAction: MessageMenuActionClosure?) {
        self.type = chatType
        self.didSendMessage = didSendMessage
+       self.didClickSuggestions = didClickSuggestions
        self.sections = ChatView.mapMessages(messages, chatType: chatType, replyMode: replyMode)
        self.ids = messages.map { $0.id }
        self.messageMenuAction = messageMenuAction
@@ -675,9 +690,11 @@ public extension ChatView where InputViewContent == EmptyView, MenuAction == Def
         chatType: ChatType = .conversation,
         replyMode: ReplyMode = .quote,
         didSendMessage: @escaping (DraftMessage) -> Void,
+        didClickSuggestions: @escaping () -> Void,
         messageBuilder: @escaping MessageBuilderClosure) {
        self.type = chatType
        self.didSendMessage = didSendMessage
+       self.didClickSuggestions = didClickSuggestions
        self.sections = ChatView.mapMessages(messages, chatType: chatType, replyMode: replyMode)
        self.ids = messages.map { $0.id }
        self.messageBuilder = messageBuilder
@@ -692,12 +709,14 @@ public extension ChatView where MessageContent == EmptyView, MenuAction == Defau
         chatType: ChatType = .conversation,
         replyMode: ReplyMode = .quote,
         didSendMessage: @escaping (DraftMessage) -> Void,
+        didClickSuggestions: @escaping () -> Void,
         inputViewBuilder: @escaping InputViewBuilderClosure) {
        self.type = chatType
        self.didSendMessage = didSendMessage
        self.sections = ChatView.mapMessages(messages, chatType: chatType, replyMode: replyMode)
        self.ids = messages.map { $0.id }
        self.inputViewBuilder = inputViewBuilder
+       self.didClickSuggestions = didClickSuggestions
        self._loading = loading
    }
 }
@@ -708,9 +727,11 @@ public extension ChatView where MessageContent == EmptyView, InputViewContent ==
         loading: Binding<Bool>,
         chatType: ChatType = .conversation,
         replyMode: ReplyMode = .quote,
-        didSendMessage: @escaping (DraftMessage) -> Void) {
+        didSendMessage: @escaping (DraftMessage) -> Void,
+        didClickSuggestions: @escaping () -> Void) {
        self.type = chatType
        self.didSendMessage = didSendMessage
+       self.didClickSuggestions = didClickSuggestions
        self.sections = ChatView.mapMessages(messages, chatType: chatType, replyMode: replyMode)
        self.ids = messages.map { $0.id }
        self._loading = loading

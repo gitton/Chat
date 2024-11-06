@@ -90,6 +90,8 @@ struct InputView: View {
             HStack(alignment: .bottom, spacing: 10) {
                 HStack(alignment: .bottom, spacing: 0) {
                     // leftView commented out to hide the attachment button
+
+                    lightbulbButton
                     middleView
                 }
                 .background {
@@ -103,6 +105,18 @@ struct InputView: View {
             .padding(.vertical, 8)
         }
         .background(backgroundColor)
+    }
+
+    var lightbulbButton: some View {
+        Button {
+            viewModel.clickedSuggestions() 
+        } label: {
+            Image(systemName: "lightbulb.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 20, height: 20)
+                .padding(EdgeInsets(top: 16, leading: 12, bottom: 16, trailing: 4))
+        }
     }
 
     @ViewBuilder
