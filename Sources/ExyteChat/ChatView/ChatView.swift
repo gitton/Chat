@@ -108,7 +108,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
     var isScrollEnabled: Bool = true
     var avatarSize: CGFloat = 32
     var messageUseMarkdown: Bool = false
-    var showMessageMenuOnLongPress: Bool = true
+    var showMessageMenuOnLongPress: Bool = false
     var showNetworkConnectionProblem: Bool = false
     var tapAvatarClosure: TapAvatarClosure?
     var mediaPickerSelectionParameters: MediaPickerParameters?
